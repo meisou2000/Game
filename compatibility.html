@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="google-site-verification" content="3uPyvatnj8k8BJkAWKWK3VVti-t4cuISjEyRtcFgTh0" />
+<title>相性診断 ✦ ふたりの縁を占う</title>
+
+<style>
+  :root {
+    --ink: #1a1018;
+    --paper: #faf7f2;
+    --rose: #c9697a;
+    --rose-light: #f0d0d6;
+    --gold: #c8a96e;
+    --gold-light: #f5ecd6;
+    --muted: #7a6a72;
+    --accent: #8b3a52;
+    --card-bg: rgba(255,255,255,0.82);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Hiragino Mincho ProN', 'Yu Mincho', 'MS Mincho', Georgia, serif;
+    background-color: var(--paper);
+    color: var(--ink);
+    min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  /* ── 背景装飾 ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 70% 50% at 15% 20%, rgba(201,105,122,0.10) 0%, transparent 70%),
+      radial-gradient(ellipse 60% 60% at 85% 80%, rgba(200,169,110,0.10) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ── 和風ノイズテクスチャ ── */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.6;
+  }
+
+  .wrapper {
+    position: relative;
+    z-index: 1;
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 60px 24px 80px;
+  }
+
+  /* ── ヘッダー ── */
+  header {
+    text-align: center;
+    margin-bottom: 52px;
+    animation: fadeDown 0.9s ease both;
+  }
+
+  .header-ornament {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 18px;
+    margin-bottom: 18px;
+  }
+
+  .header-ornament span {
+    display: block;
+    width: 60px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold));
+  }
+  .header-ornament span:last-child {
+    background: linear-gradient(90deg, var(--gold), transparent);
+  }
+
+  .header-ornament svg {
+    width: 22px;
+    height: 22px;
+    fill: var(--gold);
+  }
+
+  h1 {
+    font-family: 'Hiragino Mincho ProN', 'Yu Mincho', 'MS Mincho', Georgia, serif;
+    font-size: clamp(24px, 5vw, 34px);
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    color: var(--ink);
+    line-height: 1.4;
+  }
+
+  h1 em {
+    font-style: normal;
+    color: var(--accent);
+  }
+
+  .subtitle {
+    margin-top: 12px;
+    font-size: 13px;
+    letter-spacing: 0.15em;
+    color: var(--muted);
+    font-weight: 300;
+  }
+
+  /* ── フォームカード ── */
+  .form-card {
+    background: var(--card-bg);
+    border: 1px solid rgba(200,169,110,0.25);
+    border-radius: 20px;
+    padding: 44px 40px;
+    box-shadow:
+      0 4px 24px rgba(26,16,24,0.06),
+      0 1px 0 rgba(255,255,255,0.8) inset;
+    backdrop-filter: blur(10px);
+    animation: fadeUp 0.9s 0.2s ease both;
+  }
+
+  .person-block {
+    position: relative;
+  }
+
+  .person-block + .person-block {
+    margin-top: 32px;
+    padding-top: 32px;
+  }
+
+  .person-block + .person-block::before {
+    content: '✦';
+    position: absolute;
+    top: -14px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 14px;
+    color: var(--gold);
+    background: var(--card-bg);
+    padding: 0 10px;
+  }
+
+  .person-label {
+    font-family: 'Hiragino Mincho ProN', 'Yu Mincho', 'MS Mincho', Georgia, serif;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.25em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .person-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, var(--rose-light), transparent);
+  }
+
+  .field-row {
+    display: grid;
+    gap: 14px;
+  }
+
+  .field-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  label {
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+    font-family: 'Hiragino Kaku Gothic ProN', 'Meiryo', sans-serif;
+  }
+
+  input {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1.5px solid rgba(200,169,110,0.3);
+    border-radius: 10px;
+    font-family: 'Hiragino Mincho ProN', 'Yu Mincho', 'MS Mincho', Georgia, serif;
+    font-size: 15px;
+    color: var(--ink);
+    background: rgba(250,247,242,0.7);
+    outline: none;
+    transition: border-color 0.25s, box-shadow 0.25s, background 0.25s;
+  }
+
+  input::placeholder { color: #bbb0b5; font-size: 13px; }
+
+  input:focus {
+    border-color: var(--rose);
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(201,105,122,0.1);
+  }
+
+  .dob-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 10px;
+  }
+
+  /* ── 診断ボタン ── */
+  .btn-wrap {
+    margin-top: 36px;
+    text-align: center;
+  }
+
+  .btn-diagnose {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 16px 52px;
+    background: linear-gradient(135deg, var(--accent) 0%, var(--rose) 100%);
+    color: #fff;
+    border: none;
+    border-radius: 50px;
+    font-family: 'Hiragino Mincho ProN', 'Yu Mincho', 'MS Mincho', Georgia, serif;
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    cursor: pointer;
+    box-shadow: 0 8px 24px rgba(139,58,82,0.3);
+    transition: transform 0.2s, box-shadow 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .btn-diagnose::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.15), transparent);
+    pointer-events: none;
+  }
+
+  .btn-diagnose:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 32px rgba(139,58,82,0.35);
+  }
+
+  .btn-diagnose:active { transform: translateY(0); }
+
+  /* ── 結果セクション ── */
+  #result-section {
+    display: none;
+    margin-top: 44px;
+    animation: fadeUp 0.7s ease both;
+  }
+
+  #result-section.visible { display: block; }
+
+  /* ── パーセントゲージ ── */
+  .gauge-card {
+    background: var(--card-bg);
+    border: 1px solid rgba(200,169,110,0.25);
+    border-radius: 20px;
+    padding: 40px 32px;
+    text-align: center;
+    box-shadow: 0 4px 24px rgba(26,16,24,0.06);
+    backdrop-filter: blur(10px);
+    margin-bottom: 24px;
+  }
+
+  .names-display {
+    font-family: 'Hiragino Mincho ProN', 'Yu Mincho', 'MS Mincho', Georgia, serif;
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    margin-bottom: 28px;
+    color: var(--ink);
+  }
+
+  .names-display .amp {
+    margin: 0 12px;
+    color: var(--gold);
+    font-size: 22px;
+  }
+
+  .gauge-outer {
+    position: relative;
+    width: 180px;
+    height: 180px;
+    margin: 0 auto 24px;
+  }
+
+  .gauge-outer svg {
+    width: 180px;
+    height: 180px;
+    transform: rotate(-90deg);
+  }
+
+  .gauge-bg { fill: none; stroke: var(--rose-light); stroke-width: 12; }
+  .gauge-fill {
+    fill: none;
+    stroke: url(#gaugeGrad);
+    stroke-width: 12;
+    stroke-linecap: round;
+    stroke-dasharray: 502;
+    stroke-dashoffset: 502;
+    transition: stroke-dashoffset 1.8s cubic-bezier(0.4,0,0.2,1);
+  }
+
+  .gauge-center {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .gauge-pct {
+    font-family: 'Hiragino Mincho ProN', 'Yu Mincho', 'MS Mincho', Georgia, serif;
+    font-size: 52px;
+    font-weight: 800;
+    line-height: 1;
+    color: var(--accent);
+    letter-spacing: -0.02em;
+  }
+
+  .gauge-pct-symbol {
+    font-size: 20px;
+    color: var(--rose);
+    margin-top: 2px;
+  }
+
+  .gauge-label {
+    font-size: 12px;
+    letter-spacing: 0.2em;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+
+  .compat-level {
+    display: inline-block;
+    padding: 6px 20px;
+    border-radius: 50px;
+    font-family: 'Hiragino Kaku Gothic ProN', 'Meiryo', sans-serif;
+    font-size: 13px;
+    letter-spacing: 0.1em;
+    font-weight: 400;
+  }
+
+  .compat-level.high { background: var(--gold-light); color: var(--accent); border: 1px solid var(--gold); }
+  .compat-level.mid  { background: #e8f0fb; color: #3a5a8b; border: 1px solid #b0c4e0; }
+  .compat-level.low  { background: #f5e8e8; color: #8b3a3a; border: 1px solid #e0b0b0; }
+
+  /* ── 詳細カード ── */
+  .detail-cards {
+    display: grid;
+    gap: 16px;
+  }
+
+  .detail-card {
+    background: var(--card-bg);
+    border: 1px solid rgba(200,169,110,0.2);
+    border-radius: 16px;
+    padding: 28px 28px;
+    box-shadow: 0 2px 12px rgba(26,16,24,0.04);
+    backdrop-filter: blur(8px);
+    opacity: 0;
+    transform: translateY(16px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+
+  .detail-card.show {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .detail-card-head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+
+  .detail-icon {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+
+  .icon-friend  { background: #e8f5e9; }
+  .icon-lover   { background: #fce4ec; }
+  .icon-marry   { background: var(--gold-light); }
+
+  .detail-card-head h3 {
+    font-family: 'Hiragino Mincho ProN', 'Yu Mincho', 'MS Mincho', Georgia, serif;
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    color: var(--ink);
+  }
+
+  .detail-card p {
+    font-size: 14px;
+    line-height: 1.9;
+    color: #3d2d35;
+    font-weight: 300;
+  }
+
+  /* ── 再診断ボタン ── */
+  .btn-retry {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 32px;
+    padding: 12px 32px;
+    border: 1.5px solid var(--rose);
+    border-radius: 50px;
+    background: transparent;
+    color: var(--accent);
+    font-family: 'Hiragino Mincho ProN', 'Yu Mincho', 'MS Mincho', Georgia, serif;
+    font-size: 13px;
+    letter-spacing: 0.12em;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+    margin-left: 50%;
+    transform: translateX(-50%);
+    position: relative;
+  }
+
+  .btn-retry:hover { background: var(--rose-light); }
+
+  /* ── ローダー ── */
+  .loading-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(250,247,242,0.88);
+    backdrop-filter: blur(6px);
+    z-index: 100;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+  }
+
+  .loading-overlay.active { display: flex; }
+
+  .loader-petals {
+    position: relative;
+    width: 64px;
+    height: 64px;
+  }
+
+  .loader-petals div {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--rose);
+    animation: petalspin 1.2s linear infinite;
+  }
+
+  @keyframes petalspin {
+    0%   { transform: rotate(0deg) translate(26px) scale(1);   opacity: 1; }
+    100% { transform: rotate(360deg) translate(26px) scale(0.4); opacity: 0.3; }
+  }
+
+  .loader-petals div:nth-child(1) { animation-delay: 0s;    }
+  .loader-petals div:nth-child(2) { animation-delay: -0.15s; }
+  .loader-petals div:nth-child(3) { animation-delay: -0.30s; }
+  .loader-petals div:nth-child(4) { animation-delay: -0.45s; }
+  .loader-petals div:nth-child(5) { animation-delay: -0.60s; }
+  .loader-petals div:nth-child(6) { animation-delay: -0.75s; }
+  .loader-petals div:nth-child(7) { animation-delay: -0.90s; }
+  .loader-petals div:nth-child(8) { animation-delay: -1.05s; }
+
+  .loading-text {
+    font-family: 'Hiragino Kaku Gothic ProN', 'Meiryo', sans-serif;
+    font-size: 14px;
+    letter-spacing: 0.2em;
+    color: var(--muted);
+  }
+
+  /* ── アニメーション ── */
+  @keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── レスポンシブ ── */
+  @media (max-width: 520px) {
+    .form-card { padding: 30px 22px; }
+    .dob-row { grid-template-columns: 1fr 1fr 1fr; }
+  }
+
+  /* error */
+  .err { font-size: 12px; color: #c0392b; margin-top: 4px; display: none; }
+  .err.show { display: block; }
+</style>
+</head>
+<body>
+
+<!-- ローダー -->
+<div class="loading-overlay" id="loader">
+  <div class="loader-petals">
+    <div></div><div></div><div></div><div></div>
+    <div></div><div></div><div></div><div></div>
+  </div>
+  <p class="loading-text">ふたりの縁を紐解いています…</p>
+</div>
+
+<div class="wrapper">
+
+  <!-- ヘッダー -->
+  <header>
+    <div class="header-ornament">
+      <span></span>
+      <svg viewBox="0 0 24 24"><path d="M12 2L14.09 8.26L21 9.27L16 14.14L17.18 21.02L12 17.77L6.82 21.02L8 14.14L3 9.27L9.91 8.26L12 2Z"/></svg>
+      <span></span>
+    </div>
+    <h1>ふたりの<em>縁</em>と<em>相性</em>を占う</h1>
+    <p class="subtitle">名前と生年月日から、ふたりの運命を読み解きます</p>
+  </header>
+
+  <!-- フォーム -->
+  <div class="form-card" id="form-card">
+    <div class="person-block">
+      <div class="person-label">一人目</div>
+      <div class="field-row">
+        <div class="field-group">
+          <label>お名前</label>
+          <input type="text" id="name1" placeholder="山田太郎" maxlength="20">
+          <span class="err" id="err-name1">お名前を入力してください</span>
+        </div>
+        <div class="field-group">
+          <label>生年月日</label>
+          <div class="dob-row">
+            <input type="number" id="year1" placeholder="1995" min="1900" max="2025" style="text-align:center">
+            <input type="number" id="month1" placeholder="03" min="1" max="12" style="text-align:center">
+            <input type="number" id="day1" placeholder="15" min="1" max="31" style="text-align:center">
+          </div>
+          <span class="err" id="err-dob1">生年月日を入力してください</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="person-block">
+      <div class="person-label">二人目</div>
+      <div class="field-row">
+        <div class="field-group">
+          <label>お名前</label>
+          <input type="text" id="name2" placeholder="山本花子" maxlength="20">
+          <span class="err" id="err-name2">お名前を入力してください</span>
+        </div>
+        <div class="field-group">
+          <label>生年月日</label>
+          <div class="dob-row">
+            <input type="number" id="year2" placeholder="1997" min="1900" max="2025" style="text-align:center">
+            <input type="number" id="month2" placeholder="08" min="1" max="12" style="text-align:center">
+            <input type="number" id="day2" placeholder="22" min="1" max="31" style="text-align:center">
+          </div>
+          <span class="err" id="err-dob2">生年月日を入力してください</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="btn-wrap">
+      <button class="btn-diagnose" onclick="diagnose()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+        相性を診断する
+      </button>
+    </div>
+  </div>
+
+  <!-- 結果 -->
+  <div id="result-section">
+    <div class="gauge-card">
+      <div class="names-display" id="names-display"></div>
+
+      <div class="gauge-outer">
+        <svg viewBox="0 0 180 180">
+          <defs>
+            <linearGradient id="gaugeGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="#c8a96e"/>
+              <stop offset="100%" stop-color="#c9697a"/>
+            </linearGradient>
+          </defs>
+          <circle class="gauge-bg" cx="90" cy="90" r="80"/>
+          <circle class="gauge-fill" id="gauge-fill" cx="90" cy="90" r="80"/>
+        </svg>
+        <div class="gauge-center">
+          <div class="gauge-pct" id="gauge-pct">0</div>
+          <div class="gauge-pct-symbol">%</div>
+          <div class="gauge-label">相性</div>
+        </div>
+      </div>
+
+      <div id="compat-level-badge"></div>
+    </div>
+
+    <div class="detail-cards" id="detail-cards"></div>
+
+    <button class="btn-retry" onclick="reset()">
+      ↺ もう一度診断する
+    </button>
+  </div>
+
+</div>
+
+<script>
+// ── 固定テキストで相性説明を返す ──────────────────────────
+function getCompatText(name1, name2, pct, specialMode) {
+
+  // ── 運命的な相性（阪 × りお）──
+  if (specialMode === 'destiny') {
+    return {
+      friend: `${name1}さんと${name2}さんは、友人として非常に稀な縁で結ばれています。出会った瞬間から不思議な親しみを感じ、何年経っても色あせない絆が続くでしょう。一緒にいると自然体でいられる、かけがえのない存在です。`,
+      lover:  `${name1}さんと${name2}さんの恋愛相性は、まさに理想的な組み合わせです。お互いの存在が心の支えとなり、どんな困難も二人なら乗り越えられる強い絆が生まれます。深く愛し合える、特別なパートナーです。`,
+      marry:  `${name1}さんと${name2}さんは、結婚相手として最上の縁を持つ二人です。価値観・生活リズム・将来設計すべてが自然と重なり、共に歩む人生が輝かしいものになるでしょう。人生で一度会えるか会えないか分からない程、運命的な相性です。絶対に逃さないでください。`
+    };
+  }
+
+  // ── 注意の相性（たかし）──
+  if (specialMode === 'danger') {
+    return {
+      friend: `${name1}さんと${name2}さんは、友人としては気が合い、楽しい時間を過ごせる相性です。軽い付き合いであれば良好な関係が続くでしょう。ただし深く関わるほどすれ違いが生じやすい面もあります。`,
+      lover:  `${name1}さんと${name2}さんの恋愛は、最初は惹かれ合うものの、時間が経つにつれてお互いの価値観の違いが表面化しやすい傾向があります。交際前に価値観をよく確認することをおすすめします。`,
+      marry:  `${name1}さんと${name2}さんは、長期的な結婚相手としてはお互いに苦しくなりやすい相性です。不満やすれ違いが積み重なる可能性が高く、もし深刻な問題が続くようであれば離婚を視野に入れた方が良いかもしれません。友人関係にとどめる方が長く良い縁が続くでしょう。`
+    };
+  }
+
+  // ── 通常（パーセントに応じた5段階）──
+  if (pct >= 80) {
+    return {
+      friend: `${name1}さんと${name2}さんは、友人として非常に相性の良いペアです。話題が尽きず、一緒にいると自然体でいられる安心感があります。長年にわたって信頼し合える、かけがえのない友人関係を築けるでしょう。`,
+      lover:  `${name1}さんと${name2}さんの恋愛相性は抜群です。お互いの気持ちを素直に伝え合え、思いやりにあふれた関係が築けます。一緒にいる時間が自然と楽しく、深い絆で結ばれた理想的なカップルになれるでしょう。`,
+      marry:  `${name1}さんと${name2}さんは、結婚相手として非常に高い相性を持っています。生活習慣や将来の夢が自然と重なりやすく、困難な場面でも支え合える強い絆が生まれます。共に歩む人生が豊かなものになるでしょう。`
+    };
+  } else if (pct >= 60) {
+    return {
+      friend: `${name1}さんと${name2}さんは、友人として良好な相性です。共通の趣味や話題が見つかりやすく、自然と仲を深めていけるでしょう。お互いを尊重し合うことで、長く続く友情が生まれます。`,
+      lover:  `${name1}さんと${name2}さんは、恋人としてバランスの良い相性です。お互いの個性を認め合いながら関係を育てていけます。少しの気遣いと歩み寄りで、安定した素敵な恋愛ができるでしょう。`,
+      marry:  `${name1}さんと${name2}さんは、結婚相手として安定した相性を持っています。日常のコミュニケーションを大切にすることで、穏やかで心地よい家庭を築いていけるでしょう。`
+    };
+  } else if (pct >= 40) {
+    return {
+      friend: `${name1}さんと${name2}さんは、友人として普通の相性です。最初は少し距離を感じるかもしれませんが、時間をかけて理解し合うことで、気の置けない関係になれる可能性があります。`,
+      lover:  `${name1}さんと${name2}さんの恋愛相性は平均的です。価値観の違いが出ることもありますが、お互いに話し合いを重ねることで関係を深めていけます。焦らずじっくり向き合うことが大切です。`,
+      marry:  `${name1}さんと${name2}さんは、結婚においては努力と対話が鍵になる相性です。意見の違いを丁寧にすり合わせていくことで、互いに成長し合える関係を築けるでしょう。`
+    };
+  } else if (pct >= 25) {
+    return {
+      friend: `${name1}さんと${name2}さんは、友人としてはやや相性に課題がある組み合わせです。価値観や行動パターンが噛み合わないことがあるかもしれませんが、距離感を大切にすれば良好な関係を保てます。`,
+      lover:  `${name1}さんと${name2}さんの恋愛相性はやや難しい面があります。お互いの違いを受け入れる寛容さと、積極的なコミュニケーションが関係改善の鍵になるでしょう。`,
+      marry:  `${name1}さんと${name2}さんは、結婚においては多くの努力が必要な相性です。生活習慣や価値観の違いが摩擦を生みやすいため、結婚前に十分な対話をしておくことをおすすめします。`
+    };
+  } else {
+    return {
+      friend: `${name1}さんと${name2}さんは、友人としては相性に大きな課題がある組み合わせです。無理に近づくよりも、適切な距離感を保ちながら付き合うことで、ストレスなく関係を続けられるでしょう。`,
+      lover:  `${name1}さんと${name2}さんの恋愛相性は厳しい面が多い組み合わせです。お互いの本質的な部分が噛み合いにくく、関係を続けるには相当な努力と忍耐が必要になるかもしれません。`,
+      marry:  `${name1}さんと${name2}さんは、結婚相手としては相性が難しい組み合わせです。価値観や生活スタイルの違いが大きく、長期的な関係において多くの摩擦が生じやすいでしょう。慎重に考えることをおすすめします。`
+    };
+  }
+}
+
+// ── 特殊条件チェック ──────────────────────────────────────
+
+// 「たかし」と読める漢字（一文字または複数文字の組み合わせ）
+const TAKASHI_KANJI = [
+  // 一文字でたかしと読めるもの
+  '隆','孝','高','尚','崇','貴','敬','剛','毅','昂','昴','峻',
+  // 二文字以上の組み合わせでたかしと読む代表例
+  '孝志','孝司','孝史','孝士','孝嗣','孝二',
+  '高志','高司','高史','高士','高嗣',
+  '隆志','隆司','隆史','隆士',
+  '貴志','貴司','貴史','貴士',
+  '崇志','崇司','崇史',
+  '尚志','尚司','尚史',
+  '敬志','剛志','毅志',
+  '鷹志','鷹司',
+];
+
+function isTakashi(name) {
+  // ひらがな・カタカナ
+  if (/たかし|タカシ/.test(name)) return true;
+  // 漢字パターン
+  for (const k of TAKASHI_KANJI) {
+    if (name.includes(k)) return true;
+  }
+  return false;
+}
+
+function checkSpecial(n1, n2) {
+  // 「阪」を含む + 「りお」を含む（片方ずつ）
+  const combined = n1 + n2;
+  const hasSaka = /阪/.test(combined);
+  const hasRio  = /りお/.test(combined);
+  if (hasSaka && hasRio) return 'destiny';
+
+  // どちらかの名前が「たかし」と読める
+  if (isTakashi(n1) || isTakashi(n2)) return 'danger';
+
+  return 'normal';
+}
+
+// ── パーセント決定 ──────────────────────────────────────
+function calcPercent(n1, dob1, n2, dob2, mode) {
+  if (mode === 'destiny') return Math.floor(Math.random() * 7) + 92; // 92-98
+  if (mode === 'danger')  return Math.floor(Math.random() * 19) + 11; // 11-29
+
+  // 通常: 名前 + 生年月日ベースのハッシュで安定した値 (10-90)
+  const str = n1 + dob1 + n2 + dob2;
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    hash = (hash << 5) - hash + str.charCodeAt(i);
+    hash |= 0;
+  }
+  const base = Math.abs(hash) % 81 + 10; // 10-90
+  return base;
+}
+
+// ── ゲージアニメ ──────────────────────────────────────────
+function animateGauge(pct) {
+  const fill = document.getElementById('gauge-fill');
+  const numEl = document.getElementById('gauge-pct');
+  const circumference = 2 * Math.PI * 80; // ≈ 502.65
+
+  const offset = circumference - (circumference * pct / 100);
+  setTimeout(() => {
+    fill.style.strokeDashoffset = offset;
+  }, 100);
+
+  // 数字カウントアップ
+  let cur = 0;
+  const step = pct / 80;
+  const timer = setInterval(() => {
+    cur = Math.min(cur + step, pct);
+    numEl.textContent = Math.floor(cur);
+    if (cur >= pct) clearInterval(timer);
+  }, 20);
+}
+
+// ── レベルバッジ ──────────────────────────────────────────
+function levelBadge(pct) {
+  if (pct >= 80) return { cls: 'high', text: '✦ 運命的な相性' };
+  if (pct >= 60) return { cls: 'high', text: '◎ 相性抜群' };
+  if (pct >= 45) return { cls: 'mid',  text: '○ まずまずの相性' };
+  if (pct >= 30) return { cls: 'mid',  text: '△ 相性は普通' };
+  return           { cls: 'low',  text: '▲ 相性に課題あり' };
+}
+
+// ── バリデーション ────────────────────────────────────────
+function validate() {
+  let ok = true;
+  const fields = [
+    ['name1','err-name1'],
+    ['name2','err-name2'],
+  ];
+  fields.forEach(([id, eid]) => {
+    const v = document.getElementById(id).value.trim();
+    const e = document.getElementById(eid);
+    if (!v) { e.classList.add('show'); ok = false; }
+    else     { e.classList.remove('show'); }
+  });
+
+  ['1','2'].forEach(n => {
+    const y = document.getElementById('year'+n).value;
+    const m = document.getElementById('month'+n).value;
+    const d = document.getElementById('day'+n).value;
+    const e = document.getElementById('err-dob'+n);
+    if (!y || !m || !d) { e.classList.add('show'); ok = false; }
+    else                 { e.classList.remove('show'); }
+  });
+  return ok;
+}
+
+// ── メイン診断処理 ─────────────────────────────────────────
+function diagnose() {
+  if (!validate()) return;
+
+  const n1 = document.getElementById('name1').value.trim();
+  const n2 = document.getElementById('name2').value.trim();
+  const dob1 = `${document.getElementById('year1').value}/${document.getElementById('month1').value}/${document.getElementById('day1').value}`;
+  const dob2 = `${document.getElementById('year2').value}/${document.getElementById('month2').value}/${document.getElementById('day2').value}`;
+
+  const loader = document.getElementById('loader');
+  loader.classList.add('active');
+
+  setTimeout(() => {
+    const mode = checkSpecial(n1, n2);
+    const pct  = calcPercent(n1, dob1, n2, dob2, mode);
+    const texts = getCompatText(n1, n2, pct, mode);
+
+    document.getElementById('names-display').innerHTML =
+      `<span>${n1}</span><span class="amp">✦</span><span>${n2}</span>`;
+
+    const badge = levelBadge(pct);
+    document.getElementById('compat-level-badge').innerHTML =
+      `<span class="compat-level ${badge.cls}">${badge.text}</span>`;
+
+    const cards = [
+      { icon: '👫', cls: 'icon-friend', title: '友人として', key: 'friend' },
+      { icon: '💕', cls: 'icon-lover',  title: '恋人として', key: 'lover'  },
+      { icon: '💍', cls: 'icon-marry',  title: '結婚相手として', key: 'marry' },
+    ];
+
+    document.getElementById('detail-cards').innerHTML = cards.map(c => `
+      <div class="detail-card">
+        <div class="detail-card-head">
+          <div class="detail-icon ${c.cls}">${c.icon}</div>
+          <h3>${c.title}</h3>
+        </div>
+        <p>${texts[c.key]}</p>
+      </div>
+    `).join('');
+
+    loader.classList.remove('active');
+
+    document.getElementById('result-section').classList.add('visible');
+    document.getElementById('result-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+    animateGauge(pct);
+
+    document.querySelectorAll('.detail-card').forEach((el, i) => {
+      setTimeout(() => el.classList.add('show'), 800 + i * 180);
+    });
+  }, 2000);
+}
+
+function reset() {
+  document.getElementById('result-section').classList.remove('visible');
+  document.getElementById('detail-cards').innerHTML = '';
+  document.getElementById('form-card').scrollIntoView({ behavior: 'smooth' });
+  // ゲージリセット
+  document.getElementById('gauge-fill').style.strokeDashoffset = 502;
+  document.getElementById('gauge-pct').textContent = '0';
+}
+</script>
+  <div style="text-align:center; padding: 24px 0 40px; font-size: 12px;">
+    <a href="/privacy" style="color: #7a6a72; text-decoration: none; letter-spacing: 0.1em;">プライバシーポリシー</a>
+  </div>
+</body>
+</html>
